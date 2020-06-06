@@ -1,68 +1,123 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Deployment of ⚛️ React App on Surge :rocket:✨ using Github Actions
 
-## Available Scripts
+1. Create React [Create React App](https://github.com/facebook/create-react-app) or [Docs](https://create-react-app.dev/docs/getting-started).
 
-In the project directory, you can run:
+### Commands 
 
-### `npm start`
+1. npx create-react-app
+2. git add .
+3. git commit -m 'comment'
+4. git push
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## For Deployment on Surge
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+> #### Note : You must have [Node js](https://nodejs.org/en/download/) installed.
 
-### `npm test`
+1. Install [Surge](https://nodejs.org/en/download/) by using the below command.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+npm install surge -g
 
-### `npm run build`
+or # if your are linux user
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+sudo npm install surge -g
+```
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+2. Generate Surge token by following command.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+surge token
+```
 
-### `npm run eject`
+First time, you installed, it takes your gmail and password to create account through terminal.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. Save this token in a SECRET with name SURGE_TOKEN. For this goto Repo Settings > Secrets > New_secret. Enter Token Name SURGE_TOKEN and paste the token generated in it.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Deployment using Github Actions
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+1. create .github/workflows/file_name.yaml file in your root directory.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+root_directory
+    |_.github
+        |_workflows
+            |_file_name.yaml
+    |_other_files_and_folders_of_app
+```
 
-## Learn More
+2. Copy the below content in your app.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+name : Name_whatever_you_want
 
-### Code Splitting
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+  push:
+    branches:
+      - master
+  
+#A workflow run is made up of one or more jobs. Jobs run in parallel by default. 
 
-### Analyzing the Bundle Size
+jobs:
+    # Here job is to build the app
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+    build:
+        #The type of machine to run the job on. The machine can be either a GitHub-hosted runner, or a self-hosted runner.
+        Given below more about runs-on environment.\
 
-### Making a Progressive Web App
+        runs-on: ubuntu-latest
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+        #A job contains a sequence of tasks called steps. Steps can run commands, run setup tasks, or run an action in your repository, a public repository, or an action 
 
-### Advanced Configuration
+        name: Deploying to surge
+        steps:
+            #This action checks-out your repository under $GITHUB_WORKSPACE, so your workflow can access it.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+            - uses: actions/checkout@v2
 
-### Deployment
+            #This action sets by node environment for use in actions.A beta release of Node which adds reliability for pulling node distributions.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+            - name: Install Node.js
+                uses: actions/setup-node@v2-beta
+                with:
+                   node-version: 12
+                
+            # Yarn Installation
 
-### `npm run build` fails to minify
+            - name: Prepare for Yarn Installation
+                run: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+            - name: install yarn
+                run: sudo apt update && sudo apt install yarn
+            - name: Install Packages
+                run: yarn install
+            - name: Build React App
+                run: yarn build
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+            # Deploying on Surge
+
+            - name: Install Surge
+                run: npm install -g surge
+            - name: Run surge
+                run: surge ./build Your_name_whatever.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+
+
+
+```
+
+Runs-on :
+
+|  Virtual environment 	|       YAML workflow label      	|
+|:--------------------:	|:------------------------------:	|
+| Windows Server 2019  	| windows-latest or windows-2019 	|
+| Ubuntu 20.04         	| ubuntu-20.04                   	|
+| Ubuntu 18.04         	| ubuntu-latest or ubuntu-18.04  	|
+| Ubuntu 16.04         	| ubuntu-16.04                   	|
+| macOS Catalina 10.15 	| macos-latest or macos-10.15    	|
+
+
+##### Now you are done with deployment on Surge 👏👏, Make changes to your local repo ⚡️⚡️ and just pushed and the rest will do by github Actions :fire::fire:.
+
+Happy Coding :)
