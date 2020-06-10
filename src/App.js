@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Room from './components/room';
 
 function App() {
+
+  const [light, setlight] = useState(false);
+
+  function changeState() {
+    console.log("button clicked")
+    setlight(!light);
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -10,15 +19,10 @@ function App() {
         <p>
           This is React App deployed on Surge
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <button onClick={changeState}>Light On</button>
+        <p>The light is : {light ? "on" : "off"}</p>
       </header>
+      <Room />
     </div>
   );
 }
