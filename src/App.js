@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Room from './components/room';
+import Parent from './components/parent';
+import ValueContext from './components/ValueContext';
 
 function App() {
 
@@ -13,22 +15,27 @@ function App() {
     setlight(!light);
   }
 
+  let value = useState(48);
   return (
-    <div className={`App ${
-      mode ? "light" : "dark"
-      }`}>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          This is React App deployed on Surge
+    <ValueContext.Provider value={value}>
+      <div className={`App ${
+        mode ? "light" : "dark"
+        }`}>
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <p>
+            This is React App deployed on Surge
         </p>
-        <button onClick={changeState}>Light On</button>
-        <br></br>
-        <button onClick={() => setMode(!mode)}>Change the mode</button>
-        <p>The light is : {light ? "on" : "off"}</p>
-      </header>
-      <Room />
-    </div>
+          <button onClick={changeState}>Light On</button>
+          <br></br>
+          <button onClick={() => setMode(!mode)}>Change the mode</button>
+          <p>The light is : {light ? "on" : "off"}</p>
+        </header>
+        <Room />
+
+        <Parent />
+      </div>
+    </ValueContext.Provider>
   );
 }
 
