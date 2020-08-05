@@ -22,4 +22,8 @@ export const QuestionCard : React.FC<Props>=({questionNum, question})=>{
         }}</p>
     );
 }
+
+const CheckAnswer=(e: React.MouseEvent<HTMLButtonElement>)=>{
+
+}
 ```
